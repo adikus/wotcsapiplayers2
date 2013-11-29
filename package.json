@@ -1,0 +1,15 @@
+{
+  "name": "wotcsapiplayers2",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+      "pg": "*",
+      "squel": "*",
+      "mongodb": "*",
+      "underscore": "*",
+      "wotcs-api-system": "*"
+  }
+}
