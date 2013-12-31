@@ -9,7 +9,9 @@ module.exports = BaseController.extend({
             res.json({status:'ok'});
         }
         var ret = {
-            title: 'Player loader'
+            title: 'Player loader',
+            workers: this.workerManager.getWorkersByType(),
+            queue: this.workerManager.queue.getCurrentStatus()
         };
 
         this.render('index', ret);

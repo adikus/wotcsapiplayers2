@@ -1,6 +1,6 @@
 {
   "name": "wotcsapiplayers2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "start": "node main.js"
@@ -10,6 +10,8 @@
       "squel": "*",
       "mongodb": "*",
       "underscore": "*",
-      "wotcs-api-system": "*"
+      "wotcs-api-system": "*",
+      "csv": "*",
+      "cheerio": "*"
   }
 }

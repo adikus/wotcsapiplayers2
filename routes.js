@@ -1,5 +1,7 @@
 module.exports = {
     get:{
-        '/': 'loaders#index'
+        '/': 'loaders#index',
+        '/players/:id': 'players#index',
+        '/clans/:id': 'clans#index'
     }
 };

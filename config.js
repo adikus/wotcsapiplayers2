@@ -1,6 +1,7 @@
 module.exports = {
     db: {
-        MainDB: {url: process.env.API_POSTGRE || process.env.DATABASE_URL, type: 'PG'}
+        MainDB: {url: process.env.API_POSTGRE || process.env.DATABASE_URL, type: 'PG'},
+        MongoDB: {url: process.env.MONGOHQ_URL || "mongodb://localhost/wotcsapi", type: 'Mongo'}
     },
     server: {
         port: process.env.PORT || 3000,

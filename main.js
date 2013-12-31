@@ -7,5 +7,15 @@ var app = new App(__dirname, config);
 
 if (app.isMaster){
     var queue = new Queue();
-    app.setupWorkers(0, 'player_loader', 'player_loader_client', queue);
+    app.setupWorkers(4, 'worker', 'worker_client', queue);
 }
+
+app.once('models.ready', function() {
+    app.Vehicles.load(function() {
+        if(app.Vehicles.needsUpdate()){
+            if(app.queue){
+                app.queue.loadTankopedia();
+            }
+        }
+    });
+});
