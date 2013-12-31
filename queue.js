@@ -15,15 +15,17 @@ module.exports = Eventer.extend({
         this.finishedTasks = 0;
         this.failedTasks = 0;
         this.speed = 0;
+        this.vehiclesReady = false;
 
         var self = this;
         this.starter = setInterval(function(){
             if(self.Vehicles && self.Vehicles.ready){
                 clearInterval(self.starter);
                 console.log('Vehicle data ready');
-                setInterval(function(){ self.step(); },5);
+                self.vehiclesReady = true;
             }
         }, 50);
+        setInterval(function(){ self.step(); },5);
     },
 
     setModels: function(models){
@@ -136,13 +138,13 @@ module.exports = Eventer.extend({
         _(this.tasks).each(function(tasks, key) {
             if(tasks.length == 0){ return; }
             var score = ((new Date()).getTime() - tasks[0].added.getTime())*tasks.length;
-            if(score > winningTask.score){
+            if((score > winningTask.score && this.vehiclesReady) || key.indexOf('encyclopedia') > -1){
                 winningTask = {
                     score: score,
                     key: key
                 };
             }
-        });
+        }, this);
         return winningTask.key;
     },
 
@@ -177,6 +179,7 @@ module.exports = Eventer.extend({
     },
 
     setTaskToWaitingWorker: function(key) {
+        if(!key){ return; }
         var workerID = this.getLeastBusyWorkerID();
         var counter = this.waitingWorkers[workerID].options.howManyTasks;
         while( counter > 0 && this.tasks[key].length > 0 ){
