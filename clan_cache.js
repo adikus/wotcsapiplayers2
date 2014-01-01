@@ -11,7 +11,7 @@ module.exports = Eventer.extend({
         this.done = false;
         this.loaded = false;
         this.lastAccessed = new Date();
-        this.maxAge = 30*1000; //10 seconds
+        this.maxAge = 30*1000; //30 seconds
 
         this.IDs = [];
         this.caches = {};

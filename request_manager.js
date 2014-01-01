@@ -137,10 +137,18 @@ module.exports = Eventer.extend({
         req.onSuccess(function(data) {
             //console.log('#'+task.reqID, task.subject, task.method, 'done');
             var parsed = self.parseData(data);
-            _(task.IDs).each(function(ID) {
-                self.emit(subject+'.'+method+'.'+ID, parsed.data[ID] ? parsed.data[ID] : parsed.data);
-            });
-            self.emit('finish-request',{reqID: task.reqID, error: false, duration: req.getDuration()},true);
+            var error = false;
+            if(parsed.data){
+                _(task.IDs).each(function(ID) {
+                    self.emit(subject+'.'+method+'.'+ID, parsed.data[ID] ? parsed.data[ID] : parsed.data);
+                });
+            }else{
+                error = data;
+                _(task.IDs).each(function(ID) {
+                    self.emit('fail'+'.'+subject+'.'+method+'.'+ID, error);
+                });
+            }
+            self.emit('finish-request',{reqID: task.reqID, error: error, duration: req.getDuration()},true);
             delete self.currentRequests[task.reqID];
         });
 
@@ -162,6 +170,7 @@ module.exports = Eventer.extend({
         this.currentRequestsScrape[task.reqID] = req;
         var self = this;
         //console.log('#'+task.reqID, task.subject, task.method, ID);
+        task.scrape = true;
         this.emit('start-request',task,true);
         req.onSuccess(function(data) {
             //console.log('#'+task.reqID, task.subject, task.method, 'done');

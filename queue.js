@@ -186,9 +186,24 @@ module.exports = Eventer.extend({
             var task = this.getTask(key);
             this.addToPending(task);
             this.waitingWorkers[workerID].callback(task);
+            this.setTaskTimer(task);
             counter--;
         }
         delete this.waitingWorkers[workerID];
+    },
+
+    setTaskTimer: function(task) {
+        var region = task.region;
+        var subject = task.subject;
+        var method = task.method;
+        var key = region+'.'+subject+'.'+method;
+        var self = this;
+        setTimeout(function() {
+            if(self.pendingTasks[key][task.taskID]){
+                self.reportFail(task);
+                console.log('Task timeout', task);
+            }
+        },50*1000);
     },
 
     step: function() {

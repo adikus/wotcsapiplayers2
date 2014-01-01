@@ -6,7 +6,7 @@ block request_template
             .badge= '0 ms'
         b= '#'+ID
         = ' (' + region + ') '
-        i= req.error?(' - ' + req.error):(' - ' + req.IDs.length + ' ' + req.subject + ' ' + req.method)
+        i= req.error?(' - ' + req.error):(' - ' + req.IDs.length + ' ' + req.subject + ' ' + req.method + (req.scrape?' scrape':''))
         -minutes = req.added.getMinutes().toString();
         -seconds = req.added.getSeconds().toString();
         -minutesString = '00'.slice(0,minutes.length-2)+minutes;
