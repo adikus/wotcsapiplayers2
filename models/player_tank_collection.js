@@ -10,7 +10,7 @@ module.exports = BaseModel.extend({
     getData: function() {
         return {
             updated_at: new Date(this.u),
-            //total_battles: this.total_battles,
+            total_battles: this.total_battles,
             //serialized: this.t,
             tanks: this.getTanks()
         };
@@ -25,11 +25,12 @@ module.exports = BaseModel.extend({
     },
 
     getTanks: function(tanks){
-        if(this.tanks && this.tanks.length > 0){ return this.tanks; }
+        if(!tanks && this.tanks && this.tanks.length > 0){ return this.tanks; }
         if(!tanks){
             tanks = this.getTanksDeserialized();
         }
-        else { tanks = this.prepareTanksFromWG(tanks);   }
+        else {
+            tanks = this.prepareTanksFromWG(tanks);   }
         var self = this;
         var sum = 0;
         var count = 0;
@@ -66,6 +67,8 @@ module.exports = BaseModel.extend({
             }
             self.base_score += score;
             delete tank.tank_name;
+            tank.win_rate = Math.round(tank.wins/tank.battles*100)
+            delete tank.wins;
             return tank;
         });
         this.average_tier = count > 0 ? sum/count : 0;
@@ -97,9 +100,9 @@ module.exports = BaseModel.extend({
             return {
                 tank_id: tank.tank_id,
                 tank_name: tank.tank_name,
-                battles: tank.statistics.battles,
-                wins   : tank.statistics.wins,
-                mark_of_mastery: tank.mark_of_mastery
+                battles: parseInt(tank.statistics.battles, 10),
+                wins   : parseInt(tank.statistics.wins, 10),
+                mark_of_mastery: parseInt(tank.mark_of_mastery, 10)
             };
         });
     },

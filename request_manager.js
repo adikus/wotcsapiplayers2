@@ -109,12 +109,12 @@ module.exports = Eventer.extend({
         if(task.subject == 'account' && task.method == 'tanks'){
             var $ = cheerio.load(data);
             $('tr.t-profile_tankstype__item').each(function(){
-                var battles = $(this).find('td.t-profile_right').text();
-                var wins = parseInt($(this).find('td.t-profile_center').first().text(),10)/100*battles;
+                var battles = parseInt($(this).find('td.t-profile_right').text().replace(',',''),10);
+                var wins = parseInt($(this).find('td.t-profile_center').first().text(),10);
                 var MoM = $(this).find('td.t-ico-class img').data('badgeCode') || 0;
                 var name = $(this).find('img.png').attr('alt');
                 ret.push({
-                    statistics: { wins:wins, battles:battles },
+                    statistics: { wins:wins/100*battles, battles:battles },
                     mark_of_mastery: MoM, tank_name: name
                 });
             });

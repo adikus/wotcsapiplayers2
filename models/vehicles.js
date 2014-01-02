@@ -44,7 +44,7 @@ module.exports = BaseCollection.extend({
         var keys = [];
         var self = this;
         csv()
-            .from.path(__dirname+'/../wn8/expected_tank_values_latest.csv', { delimiter: ',', escape: '"' })
+            .from.path(__dirname+'/../wn8/expected14.csv', { delimiter: ',', escape: '"' })
             .on('record', function(row,index){
                 if(index == 0){
                     _(row).each(function(key) {
