@@ -4,6 +4,7 @@ var Request = require("./shared/request");
 var ScrapeRequest = require("./shared/scrape_request");
 var Regions = require('./shared/regions');
 var cheerio = require('cheerio');
+var Config = require('./config');
 
 module.exports = Eventer.extend({
 
@@ -83,13 +84,13 @@ module.exports = Eventer.extend({
 
     step: function(){
         var durationScrape = (new Date()).getTime() - this.lastStartScrape.getTime();
-        if(this.taskCount(true) > 0 && _(this.currentRequestsScrape).size() < 4 && durationScrape > 1500){
+        if(this.taskCount(true) > 0 && _(this.currentRequestsScrape).size() < Config.requestManager.concurrentRequests && durationScrape > Config.requestManager.waitTime){
             var task = this.getTask(true);
             this.doScrapeTask(task);
         }
 
         var duration = (new Date()).getTime() - this.lastStart.getTime();
-        if(this.taskCount() > 0 && _(this.currentRequests).size() < 4 && duration > 1500){
+        if(this.taskCount() > 0 && _(this.currentRequests).size() < Config.requestManager.concurrentRequests && duration > Config.requestManager.waitTime){
             var task = this.getTask();
             this.doApiTask(task);
         }
@@ -126,8 +127,8 @@ module.exports = Eventer.extend({
         var subject = task.subject;
         var method = task.method;
         var fields = null;
-        if(subject == 'account' && method == 'info'){ fields = 'statistics.all,clan.clan_id,nickname';}
-        if(subject == 'account' && method == 'tanks'){ fields = 'statistics.battles,statistics.wins,tank_id,mark_of_mastery'; }
+        if(subject == 'account' && method == 'info'){ fields = Config.requestManager.fields.account_info;}
+        if(subject == 'account' && method == 'tanks'){ fields = Config.requestManager.fields.account_tanks; }
 
         var req = new Request(subject, method, task.IDs, fields);
         this.currentRequests[task.reqID] = req;

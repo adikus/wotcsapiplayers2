@@ -1,6 +1,7 @@
 var Eventer = require('wotcs-api-system').Eventer;
 var Regions = require('./shared/regions');
 var _ = require('underscore');
+var Config = require('./config');
 
 module.exports = Eventer.extend({
 
@@ -88,14 +89,6 @@ module.exports = Eventer.extend({
         var key = region+'.'+subject+'.'+method;
         if(!this.pendingTasks[key]){ this.pendingTasks[key] = {}; }
         this.pendingTasks[key][task.taskID] = task;
-
-        var self = this;
-        setTimeout(function(){
-            if(self.findPendingTask(key, task.taskID) > -1){
-                console.log('Task timeout:', task.taskID);
-                self.reportFail(task);
-            }
-        },60000);
     },
 
     removeFromPending: function(task){
@@ -198,12 +191,12 @@ module.exports = Eventer.extend({
         var method = task.method;
         var key = region+'.'+subject+'.'+method;
         var self = this;
-        setTimeout(function() {
-            if(self.pendingTasks[key][task.taskID]){
+        setTimeout(function(){
+            if(self.findPendingTask(key, task.taskID) > -1){
+                console.log('Task timeout:', task);
                 self.reportFail(task);
-                console.log('Task timeout', task);
             }
-        },50*1000);
+        },Config.queue.taskTimeout);
     },
 
     step: function() {
@@ -233,7 +226,7 @@ module.exports = Eventer.extend({
                 time: new Date()
             });
         }
-        while(this.recentTasks.length > 0 && (new Date()).getTime() - this.recentTasks[0].time.getTime() > 30*1000 ){
+        while(this.recentTasks.length > 0 && (new Date()).getTime() - this.recentTasks[0].time.getTime() > Config.queue.speedPeriod ){
             this.recentTasks.shift();
         }
         if(this.recentTasks.length > 1){

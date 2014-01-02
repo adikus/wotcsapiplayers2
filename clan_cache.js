@@ -1,6 +1,7 @@
 var Eventer = require('wotcs-api-system').Eventer;
 var PlayerCache = require('./player_cache');
 var _ = require("underscore");
+var Config = require('./config');
 
 module.exports = Eventer.extend({
 
@@ -11,7 +12,7 @@ module.exports = Eventer.extend({
         this.done = false;
         this.loaded = false;
         this.lastAccessed = new Date();
-        this.maxAge = 30*1000; //30 seconds
+        this.maxAge = Config.caches.Clan.maxAge;
 
         this.IDs = [];
         this.caches = {};

@@ -1,5 +1,6 @@
 var BaseModel = require('wotcs-api-system').BaseModel('PG');
 var _ = require('underscore');
+var Config = require('../config');
 
 module.exports = BaseModel.extend({
 
@@ -17,8 +18,8 @@ module.exports = BaseModel.extend({
     },
 
     needsUpdate: function() {
-        //return !this.updated_at || (new Date(this.updated_at)).getTime() < (new Date()).getTime() - 6*60*60*1000;
-        return true;
+        return !this.updated_at || (new Date(this.updated_at)).getTime() < (new Date()).getTime() - Config.models.playerStat.maxAge;
+        //return true;
     },
 
     update: function(stats, callback) {

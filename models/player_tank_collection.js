@@ -1,5 +1,6 @@
 var BaseModel = require('wotcs-api-system').BaseModel('Mongo');
 var _ = require('underscore');
+var Config = require('../config');
 
 module.exports = BaseModel.extend({
 
@@ -9,6 +10,8 @@ module.exports = BaseModel.extend({
     getData: function() {
         return {
             updated_at: new Date(this.u),
+            //total_battles: this.total_battles,
+            //serialized: this.t,
             tanks: this.getTanks()
         };
     },
@@ -66,19 +69,27 @@ module.exports = BaseModel.extend({
             return tank;
         });
         this.average_tier = count > 0 ? sum/count : 0;
+        this.total_battles = count;
         return this.tanks;
     },
 
     getAverageTier: function() {
         if(this.average_tier){
             if(isNaN(this.average_tier) || this.average_tier == 0){
-                console.log(this.getTanks());
                 this.average_tier = 0;
             }
             return this.average_tier;
         }
         this.getTanks();
         return this.average_tier;
+    },
+
+    getTotalBattles: function() {
+        if(this.total_battles){
+            return this.total_battles;
+        }
+        this.getTanks();
+        return this.total_battles;
     },
 
     prepareTanksFromWG: function(tanks) {
@@ -151,8 +162,8 @@ module.exports = BaseModel.extend({
     },
 
     needsUpdate: function() {
-        //return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - 6*60*60*1000;
-        return true;
+        return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - Config.models.playerTankCollection.maxAge;
+        //return true;
     }
 
 });
