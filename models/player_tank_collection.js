@@ -67,8 +67,6 @@ module.exports = BaseModel.extend({
             }
             self.base_score += score;
             delete tank.tank_name;
-            tank.win_rate = Math.round(tank.wins/tank.battles*100)
-            delete tank.wins;
             return tank;
         });
         this.average_tier = count > 0 ? sum/count : 0;
@@ -101,7 +99,7 @@ module.exports = BaseModel.extend({
                 tank_id: tank.tank_id,
                 tank_name: tank.tank_name,
                 battles: parseInt(tank.statistics.battles, 10),
-                wins   : parseInt(tank.statistics.wins, 10),
+                wins   : Math.round(tank.statistics.wins),
                 mark_of_mastery: parseInt(tank.mark_of_mastery, 10)
             };
         });
@@ -165,8 +163,8 @@ module.exports = BaseModel.extend({
     },
 
     needsUpdate: function() {
-        return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - Config.models.playerTankCollection.maxAge;
-        //return true;
+        //return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - Config.models.playerTankCollection.maxAge;
+        return true;
     }
 
 });
