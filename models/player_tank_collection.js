@@ -163,8 +163,8 @@ module.exports = BaseModel.extend({
     },
 
     needsUpdate: function() {
-        //return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - Config.models.playerTankCollection.maxAge;
-        return true;
+        return !this.u || (new Date(this.u)).getTime() < (new Date()).getTime() - Config.models.playerTankCollection.maxAge;
+        //return true;
     }
 
 });
