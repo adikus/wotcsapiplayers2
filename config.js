@@ -51,7 +51,7 @@ module.exports = {
         waitTime: 1500,
         concurrentRequests: 4,
         fields: {
-            account_info: 'statistics.all,clan.clan_id,nickname',
+            account_info: 'statistics.all,nickname',
             account_tanks: 'statistics.battles,statistics.wins,tank_id,mark_of_mastery'
         }
     },

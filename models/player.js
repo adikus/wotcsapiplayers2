@@ -15,8 +15,7 @@ module.exports = BaseModel.extend({
 
     update: function(data, callback) {
         this.name = data.nickname;
-        this.clan_id = data.clan && data.clan.clan_id ? parseInt(data.clan.clan_id, 10) : 0;
-        this.save(['name', 'clan_id'], function(err) {
+        this.save(['name'], function(err) {
             if(err){console.log(err);}
         });
         if(callback){ callback(); }
