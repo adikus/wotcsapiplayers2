@@ -1,6 +1,7 @@
 var BaseCollection = require('wotcs-api-system').BaseCollection('Mongo');
-var csv = require('csv');
+var csv = require('csv').parse;
 var _ = require('underscore');
+var fs = require('fs');
 
 module.exports = BaseCollection.extend({
 
@@ -43,9 +44,10 @@ module.exports = BaseCollection.extend({
     getExpectedValues: function() {
         var keys = [];
         var self = this;
-        csv()
-            .from.path(__dirname+'/../wn8/expected14.csv', { delimiter: ',', escape: '"' })
-            .on('record', function(row,index){
+
+
+        var parser = csv({delimiter: ';'}, function(err, data){
+            _(data).each(function(row,index){
                 if(index == 0){
                     _(row).each(function(key) {
                         keys.push(key);
@@ -53,10 +55,12 @@ module.exports = BaseCollection.extend({
                 }else{
                     self.expectedValues[row[0]] = _.object(keys,row);
                 }
-            }).on('end', function(){
-                self.readyExpected = true;
-                self.ready = self.readyVehicless && self.readyExpected;
             });
+            self.readyExpected = true;
+            self.ready = self.readyVehicless && self.readyExpected;
+        });
+
+        fs.createReadStream(__dirname+'/../wn8/expected14.csv').pipe(parser);
     },
 
     findExpected: function(name){
